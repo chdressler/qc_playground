@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import scipy.special
-from bombanitio import specialx
+from bombanitio.special import specialx
 
 def get_nuc(type1, type2, exp1, exp2, r1, r2, r3):
     if type1 == 0 and type2 ==0:
