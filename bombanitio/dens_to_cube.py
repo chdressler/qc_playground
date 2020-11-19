@@ -6,7 +6,7 @@ from bombanitio.toolbox import constants
 from bombanitio import read_xyz
 from bombanitio import create_basis
 from bombanitio.toolbox import lib_dme
-
+import sys
 
 def basis_func_to_grid(grid, orb_type ,exp, coeff, pos):
    #print(grid.shape)
@@ -42,11 +42,111 @@ def basis_func_to_grid(grid, orb_type ,exp, coeff, pos):
    #print(data[52,52,52])
    return data
 
-#four *= (128 *exp1**5 / np.pi**3)**0.25
-#    four *= (2.0 * exp2 / np.pi)**0.75
-#def dens_to_cube(fn1, dens, exp_mat, coeff_mat, orb_typ, orb_pos):
-#def dens_to_cube(fn1):
+
 def dens_to_cube():
+    print("command line:")
+    print(sys.argv)
+    fn_dens = str(sys.argv[1])
+    np.set_printoptions(precision=4, suppress=True)
+    dens = np.loadtxt(fn_dens)
+    coord, atom = read_xyz.easy_read("coord.xyz", None, False, False)
+    coord = coord[0,:,:]
+    coord = read_xyz.xyz_to_bohr(coord)
+    zoa = read_xyz.atom_to_zoa(atom)
+    noa = atom.shape[0]
+    noo, orb_coord, orb_type, coef_mat, exp_mat = create_basis.basisset(noa, zoa, coord)
+    n_grid =  140
+    cube_length_au =  7 / bohr_in_a
+    data = np.zeros((n_grid,n_grid,n_grid))
+    mesh = data.shape
+    origin_au = np.array([cube_length_au/2 ,cube_length_au/2,cube_length_au/2]) #punkt in rechter!!!!! unterer ecke, nicht die box mitte!!!
+    cell_au = np.eye(3) * cube_length_au / n_grid
+    grid = CubeFileTools.CalcGridPositions(cell_au, mesh, origin_au)
+    comment1 =  " "
+    comment2 =  " "
+    #numbers = zoa
+
+    cell_data = dict()
+    cell_data['numbers'  ] = zoa
+    #cell_data['coords_au'] = coords_au
+    cell_data['coords_au'] = coord
+    cell_data['cell_au'  ] = cell_au
+    #cell_data['symbols'  ] = [constants.symbols[int(e)-1] for e in cell_data['numbers']]
+    cell_data['symbols'  ] = atom
+    cell_data['species'  ] = list(set(cell_data['symbols']))
+    cell_data['mesh'     ] = data.shape
+    cell_data['d3r_au'   ] = cell_au[0,0]*cell_au[1,1]*cell_au[2,2]
+    cell_data['volume_au'] = cell_data['d3r_au']*data.shape[0]*data.shape[1]*data.shape[2]
+    cell_data['r_au'     ] = grid
+    #cell_data['r_au'     ] = CalcGridPositions(cell_au, data.shape, origin_au=origin_au)
+    cell_data['data'     ] = data
+    cell_data['comment1' ] = comment1
+    cell_data['comment2' ] = comment2
+    cell_data['origin_au'] = -origin_au
+#species  symbols  numbers  comment1  comment2   
+   #def WriteCubeFile(filename, comment1, comment2, numbers, coords, cell, data, origin=np.zeros(3)):
+   #fn_out = "test.cube"
+    fn_out =  fn_dens + ".cube"
+    
+
+
+    print("start to calc density on grid")
+    basis_at_grid = []
+    for i in range(noo):
+       #print("input ",orb_type[i], exp_mat[i], coef_mat[i], orb_coord[i])
+       data = basis_func_to_grid(grid, orb_type[i] ,exp_mat[i], coef_mat[i], orb_coord[i])
+       #str1 = "basis_function"+str(i)+".cube"
+       #cube.WriteCubeFile(str1, cell_data['comment1' ], cell_data['comment2' ], cell_data['numbers'  ], cell_data['coords_au'], cell_data['cell_au'  ], data, cell_data['origin_au'])
+       basis_at_grid.append(data)
+    basis_at_grid = np.array(basis_at_grid)
+    basis_overlapp_states = []
+    for i in range(noo):
+       basis_overlapp_states.append([])
+       for j in range(noo):
+           basis_overlapp_states[i].append(basis_at_grid[i]*basis_at_grid[j])
+    basis_overlapp_states = np.array(basis_overlapp_states)
+    #print(basis_overlapp_states.shape)
+    #strange_dens_mat = basis_overlapp_states.sum(axis=(2,3,4))
+    #print(strange_dens_mat)
+    #basis_overlapp_states = basis_overlapp_states*dens
+    basis_overlapp_states1 = basis_overlapp_states*dens[:,:,np.newaxis, np.newaxis, np.newaxis]
+    data = basis_overlapp_states1.sum(axis=(0,1))
+    #fn_out =
+    cube.WriteCubeFile(fn_out, cell_data['comment1' ], cell_data['comment2' ], cell_data['numbers'  ], cell_data['coords_au'], cell_data['cell_au'  ], data, cell_data['origin_au'])
+
+    #diff_list = []
+    #for fn_dens in  [ "density_mat0", "density_mat1", "density_mat2", "density_mat3"]:
+    #   #fn_dens = "density_mat0"
+    #   dens = np.loadtxt(fn_dens)
+    #   basis_overlapp_states1 = basis_overlapp_states*dens[:,:,np.newaxis, np.newaxis, np.newaxis]
+    #   data = basis_overlapp_states1.sum(axis=(0,1))
+    #   str1 = fn_dens+".cube"
+    #   cube.WriteCubeFile(str1, cell_data['comment1' ], cell_data['comment2' ], cell_data['numbers'  ], cell_data['coords_au'], cell_data['cell_au'  ], data, cell_data['origin_au'])
+    #   print("summ of electrons: ", data.sum())
+    #   if fn_dens == "density_mat0":
+    #       ref = np.copy(data)
+    #   else:
+   #     diff = data - ref
+    ##    str1 = "diff_"+fn_dens+".cube"
+    #    cube.WriteCubeFile(str1, cell_data['comment1' ], cell_data['comment2' ], cell_data['numbers'  ], cell_data['coords_au'], cell_data['cell_au'  ], diff, cell_data['origin_au'])
+   ##     print("summ of diff electrons: ", diff.sum())
+    #    diff_list.append(diff)
+    #diff_list = np.array(diff_list)
+    #mom_mat = lib_dme.create_overlap_mat(diff_list[1:], mom_pol_ar)
+    #mom_mat = lib_dme.create_overlap_mat(diff_list, mom_pol_ar)
+    #print("mom mat")
+    #print(mom_mat)
+    #print(abs(diff_list[0]).sum())
+    #print((diff_list[0]*mom_pol_ar[1]).sum())
+    #special = diff_list[0]*mom_pol_ar[1]
+    #cube.WriteCubeFile("special.cube", cell_data['comment1' ], cell_data['comment2' ], cell_data['numbers'  ], cell_data['coords_au'], cell_data['cell_au'  ], special, cell_data['origin_au'])
+
+
+
+
+
+
+def calc_moments_numerically():
    #fn1 = "../data/dens_h2o.cube" 
    #fn1 = "/home/dressler/projects/HF/develop_bombanitio/minus9/data/dens_h2o.cube" 
    #fn1 = "/home/dressler/projects/HF/develop_bombanitio/minus9/data/DENSITY.cube" 

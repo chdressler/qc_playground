@@ -71,7 +71,7 @@ def nuc_pp(type1, type2, exp1, exp2, r1, r2, r3):
         #nuc =   0.5 - exp1 * exp2 / (exp1 + exp2) * (r1[i] - r2[i]) * (r1[j] - r2[j])
         nuc = nu * rr[i]*rr[j] * s3(t) + (1 + 2* exp1 *(r1[j]-r2[j])*rr[i] - 2*exp2 * (r1[i] - r2[i])*rr[j]) * s2(t) + (2 - (4*exp1*exp2*(r1[i] - r2[i]) *(r1[j] -r2[j]))/nu)*s1(t)  
     else:    
-        nuc = nu * rr[i]*rr[j] * s3(t) + (2* exp1 *(r1[j]-r2[j])*rr[i] - 2*exp2 * (r1[i] - r2[i])*rr[j]) * s2(t) + ((4*exp1*exp2*(r1[i] - r2[i]) *(r1[j] -r2[j]))/nu)*s1(t)  
+        nuc = nu * rr[i]*rr[j] * s3(t) + (2* exp1 *(r1[j]-r2[j])*rr[i] - 2*exp2 * (r1[i] - r2[i])*rr[j]) * s2(t) + (-1* (4*exp1*exp2*(r1[i] - r2[i]) *(r1[j] -r2[j]))/nu)*s1(t)  
     nuc *= -gab(exp1, exp2, r1, r2) * np.pi**1.5 / (4*nu**2) 
     nuc *= (128 *exp1**5 / np.pi**3)**0.25
     nuc *= (128 *exp2**5 / np.pi**3)**0.25

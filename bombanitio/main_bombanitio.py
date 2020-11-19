@@ -13,7 +13,7 @@ from bombanitio import scf
 
 
 def main():
-    print("brrrr")
+    print("sonntag")
     print("Performing a  self-consistent HF calculation of the molecule given by the file  coord.xyz in this directory ... ")
     print("Reading coordinates ... ")
     coord, atom = read_xyz.easy_read("coord.xyz", None, False, False)
