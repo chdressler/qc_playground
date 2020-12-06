@@ -85,6 +85,7 @@ def main():
     print("#######################################################")
     
     np.savetxt("coefficients", coeff[:int(noe/2),:]) 
+    np.savetxt("density_mat", p) 
 
 
 

@@ -159,7 +159,7 @@ def four_ppss(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, 
 
 
 
-def four_psps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4):
+def four_psps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4, norm = True):
     nu = exp1 +  exp2
     theta = exp3 + exp4
     q = ( nu * theta / (nu + theta))**0.5
@@ -170,10 +170,11 @@ def four_psps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, 
     k = type3 - 1
     #four = gab(exp1, exp2, r1, r2) * gab(exp3, exp4, r3, r4) / 2  * q * np.pi**3 / (nu**2.5 *  theta**1.5 ) * (q**2 * rr[i] * s2(t)  - 2* exp2 * (r1[i] - r2[i]) * s1(t))
     four = gab(exp1, exp2, r1, r2) * gab(exp3, exp4, r3, r4) / 4  * q * np.pi**3 / (nu**2.5 *  theta**2.5 ) * (-q**4 * rr[i] * rr[k] * s3(t) + q**2 * (2*exp2 *(r1[i]-r2[i])* rr[k]- 2*exp4*(r3[k]-r4[k])*rr[i]-delta(i,k)) *s2(t) + 4 *exp2 * exp4 * (r1[i] -r2[i])*(r3[k]-r4[k])*s1(t))           
-    four *= (128 *exp1**5 / np.pi**3)**0.25
-    four *= (2.0 * exp2 / np.pi)**0.75
-    four *= (128 *exp3**5 / np.pi**3)**0.25
-    four *= (2.0 * exp4 / np.pi)**0.75
+    if norm:
+        four *= (128 *exp1**5 / np.pi**3)**0.25
+        four *= (2.0 * exp2 / np.pi)**0.75
+        four *= (128 *exp3**5 / np.pi**3)**0.25
+        four *= (2.0 * exp4 / np.pi)**0.75
     return four
 
 def u1(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4):
@@ -232,7 +233,7 @@ def u4(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4):
     tmp  = - rr[i] * rr[j] * rr[k]
     return tmp
 
-def four_ppps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4):
+def four_ppps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4, norm = True):
     nu = exp1 +  exp2
     theta = exp3 + exp4
     q = ( nu * theta / (nu + theta))**0.5
@@ -244,7 +245,7 @@ def four_ppps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, 
     l = type4 - 1
     #four = exp1 / nu * (r1[j] - r2[j]) * four_psps(type1, type4, type3, type4,  exp1, exp4, exp3, exp4,  r1, r4, r3, r4) + gab(exp1, exp2, r1, r2) * gab(exp3, exp4, r3, r4) / 8  * q * np.pi**3 / (nu**3.5 *  theta**2.5 ) * (q**6 * u4(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) * s4(t) + q**4 * u3(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) * s3(t) + q**2 * u2(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)  * s2(t) + u1(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) * s1(t))
     #four = exp1 / nu * (r1[j] - r2[j]) * four_psps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) 
-    four = exp1 / nu * (r1[j] - r2[j]) * four_psps(type1, 0, type3, 0,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) 
+    four = exp1 / nu * (r1[j] - r2[j]) * four_psps(type1, 0, type3, 0,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4, norm = False) 
     #print(four)
     four +=  gab(exp1, exp2, r1, r2) * gab(exp3, exp4, r3, r4) / 8  * q * np.pi**3 / (nu**3.5 *  theta**2.5 ) * (q**6 * u4(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) * s4(t) + q**4 * u3(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) * s3(t) + q**2 * u2(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)  * s2(t) + u1(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) * s1(t))
     #print(u1(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4))
@@ -254,10 +255,11 @@ def four_ppps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, 
     #four = gab(exp1, exp2, r1, r2) * gab(exp3, exp4, r3, r4) / 2  * q * np.pi**3 / (nu**2.5 *  theta**1.5 ) * (q**2 * rr[i] * s2(t)  - 2* exp2 * (r1[i] - r2[i]) * s1(t))
     #four = gab(exp1, exp2, r1, r2) * gab(exp3, exp4, r3, r4) / 4  * q * np.pi**3 / (nu**2.5 *  theta**2.5 ) * (-q**4 * rr[i] * rr[k] * s3(t) + q**2 * (2*exp2 *(r1[i]-r2[i])* rr[k]- 2*exp4*(r3[k]-r4[k])*rr[i]-delta(i,k)) *s2(t) + 4 *exp2 * exp4 * (r1[i] -r2[i])*(r3[k]-r4[k])*s1(t))
     #four = 
-    four *= (128 *exp1**5 / np.pi**3)**0.25
-    four *= (128 *exp2**5 / np.pi**3)**0.25
-    four *= (128 *exp3**5 / np.pi**3)**0.25
-    four *= (2.0 * exp4 / np.pi)**0.75
+    if norm:
+        four *= (128 *exp1**5 / np.pi**3)**0.25
+        four *= (128 *exp2**5 / np.pi**3)**0.25
+        four *= (128 *exp3**5 / np.pi**3)**0.25
+        four *= (2.0 * exp4 / np.pi)**0.75
     #print(four)
     return four
 
@@ -334,7 +336,10 @@ def four_pppp(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, 
     k = type3 - 1
     l = type4 - 1
     #four = exp1 / nu * (r1[j] - r2[j]) * four_ppps(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)
-    four = exp1 / nu * (r1[j] - r2[j]) * four_ppps(type1, 0, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)
+    #changed 20.11.20
+    #four = exp1 / nu * (r1[j] - r2[j]) * four_ppps(type1, 0, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)
+    #four = exp1 / nu * (r1[j] - r2[j]) * four_ppps(type3, type4, type1, 0,  exp3, exp4, exp1, exp2,  r3, r4, r1, r2)
+    four = exp1 / nu * (r1[j] - r2[j]) * four_ppps(type3, type4, type1, 0,  exp3, exp4, exp1, exp2,  r3, r4, r1, r2, norm = False)
     four += gab(exp1, exp2, r1, r2) * gab(exp3, exp4, r3, r4) / 16  * q * np.pi**3 / (nu**3.5 *  theta**3.5 ) * (-q**8*u4(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) * rr[l]*s5(t) + q**6*(v4(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) + 2*exp3*(r3[l] - r4[l])*u4(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)- u3(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)*rr[l])*s4(t) + q**4 * (v3(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) +  2 * exp3 * (r3[l]-r4[l]) * u3(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) - u2(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)*rr[l]) * s3(t) + q**2 * (v2(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) +  2* exp3 * (r3[l] -r4[l])*u2(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) - u1(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)*rr[l])*s2(t) + (v1(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4) + 2* exp3*(r3[l] - r4[l])* u1(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4)) * s1(t))
     four *= (128 *exp1**5 / np.pi**3)**0.25
     four *= (128 *exp2**5 / np.pi**3)**0.25
@@ -353,6 +358,7 @@ def four_pppp(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, 
 def get_four_mat(noo, orb_coord, orb_type, coef_mat, exp_mat):
     four_mat = np.zeros((noo, noo, noo, noo))
     for i in range(noo):
+        print(i/noo) 
         for j in range(noo):
             for k  in range(noo):
                 for l in range(noo):

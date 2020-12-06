@@ -142,7 +142,7 @@ def scf(four_mat, noe, noo, x, h, ext = None):
                 for j in range(noo):
                     delta = delta + (p[i, j] - oldp[i, j]) ** 2
             delta /= noo
-            print('delta', delta)
+            print('delta density', delta)
             
             delta_en = abs(en - old_en)
             print('delta energy', delta_en)
