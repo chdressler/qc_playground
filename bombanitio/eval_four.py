@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import scipy.special
-from bombanitio.special import specialx
+from bombanitio.special import special
 import sys
 
 def get_four(type1, type2, type3, type4,  exp1, exp2, exp3, exp4,  r1, r2, r3, r4):
