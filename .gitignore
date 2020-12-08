@@ -1,0 +1,7 @@
+build/
+__pycache__/
+bombanitio.egg-info/
+*.pyc
+*.so
+*.egg
+*.npz

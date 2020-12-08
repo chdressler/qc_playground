@@ -2,18 +2,15 @@
 do-it-yourself electronic structure calculations 
 
 
-How to install?
+## How to install?
 
-flit install
+```
+pip install -r requirements.txt
+pip install .
+```
 
-cd bombbnitio/special
+## How to test?
 
-f2py -c special.f  -m specialx
-
-
-
-How to test?
-
-cd test
-
-pytest -v
+```
+pytest test
+```
