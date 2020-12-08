@@ -10,7 +10,9 @@ setup(
     name="bombanitio",
     packages=["bombanitio"],
     ext_modules=[lib],
-    install_requires=["basis_set_exchange", "scipy"],
+    install_requires=["numpy", "basis_set_exchange", "scipy"],
+    extras_require={"testing": ["pytest"]},
+    test_suite="test",
     entry_points={
         "console_scripts": [
             "write_to_cube = bombanitio.dens_to_cube:dens_to_cube",
