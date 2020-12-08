@@ -41,10 +41,7 @@ def test_orbitals():
 # 7                  0.16886   0.62391   3.42525
 
 
-def test_create_basis():
-    coord, atom = read_xyz.easy_read("test_coord.xyz", None, False, False)
-    coord = coord[0, :, :]
-    zoa = read_xyz.atom_to_zoa(atom)
+def test_create_basis(coord, atom, zoa):
     noa = atom.shape[0]
     # basisset(noa, zoa, coord)
     noo, orb_coord, orb_type, coef_mat, exp_mat = create_basis.basisset(noa, zoa, coord)
@@ -74,7 +71,7 @@ def test_create_basis():
 # -0.75690    0.58585     0.0000 1
 
 
-def test_easy_read():
+def test_easy_read(coord, atom, zoa):
     ref_coord = np.array(
         [
             [0.00000, 0.00000, 0.0000],
@@ -84,9 +81,6 @@ def test_easy_read():
     )
     ref_atom = np.array(["O", "H", "H"])
     ref_z = np.array([8, 1, 1])
-    coord, atom = read_xyz.easy_read("test_coord.xyz", None, False, False)
-    coord = coord[0, :, :]
-    zoa = read_xyz.atom_to_zoa(atom)
     assert coord == pytest.approx(ref_coord)
     # print(ref_atom == atom)
     # assert
