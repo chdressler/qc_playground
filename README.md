@@ -9,7 +9,7 @@ pip install -r requirements.txt
 pip install .
 ```
 
-How to test?
+## How to test?
 
 ```
 pytest test
