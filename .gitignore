@@ -4,3 +4,4 @@ bombanitio.egg-info/
 *.pyc
 *.so
 *.egg
+*.npz
