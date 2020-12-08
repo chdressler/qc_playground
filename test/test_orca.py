@@ -1,20 +1,19 @@
-from bombanitio import eval_over
-from bombanitio import eval_kin
-from bombanitio import eval_nuc
-from bombanitio import eval_four
-from bombanitio import eval_dipole
-from bombanitio import read_xyz
-from bombanitio import create_basis
-from bombanitio import scf
+from bombanitio import (
+    eval_over,
+    eval_kin,
+    eval_nuc,
+    eval_four,
+    eval_dipole,
+    read_xyz,
+    create_basis,
+    scf,
+)
 import pytest
 import numpy as np
 
 
-def test_orca_water():
-    coord, atom = read_xyz.easy_read("test_coord.xyz", None, False, False)
-    coord = coord[0, :, :]
+def test_orca_water(coord, atom, zoa):
     coord = read_xyz.xyz_to_bohr(coord)
-    zoa = read_xyz.atom_to_zoa(atom)
     noa = atom.shape[0]
     noo, orb_coord, orb_type, coef_mat, exp_mat = create_basis.basisset(noa, zoa, coord)
     read_xyz.plot_initial_orbs(noo, orb_coord, orb_type, coef_mat, exp_mat)
