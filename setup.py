@@ -3,7 +3,8 @@ from numpy.distutils.core import setup, Extension
 
 
 lib = Extension(
-    name="bombanitio.special.special.f", sources=["bombanitio/special/special.f"]
+    name="bombanitio.special",
+    sources=["bombanitio/special/special.f"],
 )
 
 setup(
@@ -12,6 +13,7 @@ setup(
     ext_modules=[lib],
     install_requires=["numpy", "basis_set_exchange", "scipy"],
     extras_require={"testing": ["pytest"]},
+    package_data={"bombanitio": ["data/*"]},
     test_suite="test",
     entry_points={
         "console_scripts": [

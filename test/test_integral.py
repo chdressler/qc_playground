@@ -1,17 +1,11 @@
-from bombanitio import eval_over
-from bombanitio import eval_kin
-from bombanitio import eval_nuc
-from bombanitio import eval_four
-from bombanitio import read_xyz
+import pkg_resources
+from bombanitio import eval_over, eval_kin, eval_nuc, eval_four, read_xyz
 import pytest
 from bombanitio import create_basis
 import numpy as np
 
-def test_over():
-    coord, atom = read_xyz.easy_read("test_coord.xyz", None, False, False)
-    coord = coord[0,:,:]
+def test_over(coord, atom, zoa):
     coord = read_xyz.xyz_to_bohr(coord)
-    zoa = read_xyz.atom_to_zoa(atom)
     noa = atom.shape[0]
     noo, orb_coord, orb_type, coef_mat, exp_mat = create_basis.basisset(noa, zoa, coord)
     #read_xyz.plot_initial_orbs(noo, orb_coord, orb_type, coef_mat, exp_mat)
@@ -25,11 +19,8 @@ def test_over():
     [ 0.05397,   0.47475,  -0.31112,   0.24081,   0.00000,   0.25167,   1.00000]])
     assert over_mat == pytest.approx(over_ref.astype('float64'), rel = 0.001)
 
-def test_kin():
-    coord, atom = read_xyz.easy_read("test_coord.xyz", None, False, False)
-    coord = coord[0,:,:]
+def test_kin(coord, atom, zoa):
     coord = read_xyz.xyz_to_bohr(coord)
-    zoa = read_xyz.atom_to_zoa(atom)
     noa = atom.shape[0]
     noo, orb_coord, orb_type, coef_mat, exp_mat = create_basis.basisset(noa, zoa, coord)
     kin_mat = eval_kin.get_kin_mat(noo, orb_coord, orb_type, coef_mat, exp_mat)
@@ -53,15 +44,8 @@ def test_kin():
     assert kin_mat == pytest.approx(kin_ref.astype('float64') , rel=1e-3, abs=1e-4)
 
 
-
-
-
-
-def test_nuc():
-    coord, atom = read_xyz.easy_read("test_coord.xyz", None, False, False)
-    coord = coord[0,:,:]
+def test_nuc(coord, atom, zoa):
     coord = read_xyz.xyz_to_bohr(coord)
-    zoa = read_xyz.atom_to_zoa(atom)
     noa = atom.shape[0]
     noo, orb_coord, orb_type, coef_mat, exp_mat = create_basis.basisset(noa, zoa, coord)
 #NUCLEAR-ATTRACTION MATRIX
@@ -80,11 +64,8 @@ def test_nuc():
     print(nuc_mat)
     assert nuc_mat == pytest.approx(nuc_ref.astype('float64'), rel = 0.001)
 
-def test_four_ss():
-    coord, atom = read_xyz.easy_read("test_coord.xyz", None, False, False)
-    coord = coord[0,:,:]
+def test_four_ss(coord, atom, zoa):
     coord = read_xyz.xyz_to_bohr(coord)
-    zoa = read_xyz.atom_to_zoa(atom)
     noa = atom.shape[0]
     noo, orb_coord, orb_type, coef_mat, exp_mat = create_basis.basisset(noa, zoa, coord)
     four_mat = eval_four.get_four_mat(noo, orb_coord, orb_type, coef_mat, exp_mat)
@@ -109,7 +90,7 @@ def test_four_ss():
 #4 4 4 4     0.88016
     assert four_mat[3,3,3,3] == pytest.approx(0.88016, rel = 0.001)#ppps
 #def test_four_full():
-    four_pre = np.loadtxt("../data/FOUR_CENTRE_TEST_DATA.dat")
+    four_pre = np.loadtxt(pkg_resources.resource_filename("bombanitio", "data/FOUR_CENTRE_TEST_DATA.dat"))
     for i in range(four_pre.shape[0]):
 #    for i in range(3):
 #        print("hallllllllllllllllllllloooooooooooooooooooo")
